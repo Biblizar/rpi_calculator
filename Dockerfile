@@ -6,7 +6,7 @@ FROM python:3.11-slim
 WORKDIR /api
 
 # Copy API files
-COPY api/ ./api
+COPY ./api/ /api
 
 # Install dependencies 
 COPY api/requirements.txt .
