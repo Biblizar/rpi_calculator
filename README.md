@@ -27,7 +27,7 @@ Technical test
 
 #### Export all expression in CSV
 ```http
-  GET /docs
+  GET /doc
 ```
 
 | Parameter | Type     | Description                |
