@@ -1,10 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from calculator import RPNCalculator
-from database import Database
+from .calculator import RPNCalculator
+from .database import Database
 from fastapi.responses import StreamingResponse
 import csv
 import io
+
 db = Database()
 
 app = FastAPI()
@@ -20,9 +21,12 @@ class CalculationResponse(BaseModel):
 async def calculate(request: CalculationRequest):
     try:
         result = calculator.calculate(request.expression)
+        if result is None:
+            raise ValueError("Invalid calculation result")
         await db.insert_operation(expression=request.expression, result=result)
+        return CalculationResponse(result=result)
     except Exception as exception:
-        raise HTTPException(status=400, detail=str(exception))
+        raise HTTPException(status_code=400, detail=f"Error during calculation: {str(exception)}")
 
 @app.get('/export_csv', response_class=StreamingResponse)
 async def export_csv():
